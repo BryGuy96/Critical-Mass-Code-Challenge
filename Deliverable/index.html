@@ -1,0 +1,42 @@
+<html>
+
+<head>
+
+    <title>
+        Bryson's Nav Bar POC
+    </title>
+
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <script src="js/script.js"></script>
+
+</head>
+
+<body onresize="repositionSelector(true)">
+    <div>
+        <div>
+            <ul>
+                <li><a href="#" onclick="onClick(0)">Cupertino</a></li>
+                <li><a href="#" onclick="onClick(1)">New York City</a></li>
+                <li><a href="#" onclick="onClick(2)">London</a></li>
+                <li><a href="#" onclick="onClick(3)">Amsterdam</a></li>
+                <li><a href="#" onclick="onClick(4)">Tokyo</a></li>
+                <li><a href="#" onclick="onClick(5)">Hong Kong</a></li>
+                <li><a href="#" onclick="onClick(6)">Sydney</a></li>
+            </ul>
+
+            <hr id="pseudo-active-selector" />
+
+
+        </div>
+
+
+
+        <div class="cityContent">
+            <!-- No children initially; Will be modified by onClick script -->
+            <text class="dateText fade" id="local-time" />
+        </div>
+
+    </div>
+</body>
+
+</html>
