@@ -1,0 +1,228 @@
+<html>
+
+<head>
+
+    <title>
+        Bryson's Nav Bar POC
+    </title>
+
+    <style>
+        body {
+            font: 18px 'Helvetica Neue', Helvetica, Arial;
+            margin: 40px;
+        }
+
+        ul {
+            margin: 0px;
+            padding: 0px;
+            display: flex;
+            border-bottom: 1px solid #aeb6bf;
+            justify-content: space-evenly;
+        }
+
+        ul li {
+            display: flex;
+            justify-content: center;
+        }
+
+        a {
+            padding: .75rem 0;
+            margin: 0;
+            text-decoration: none;
+            color: #aeb6bf;
+        }
+
+        a:hover {
+            color: #007AFF;
+        }
+
+        a.active {
+            color: black;
+        }
+
+        hr {
+            height: 1px;
+            /* Width should be set by repositionSelector function */
+            width: 0px;
+            margin: 0;
+            background: black;
+            border: none;
+            position: relative;
+            top: -1px;
+            transition: .7s ease-in-out;
+        }
+
+        .dateText {
+            font-size: 3rem;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 225ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .fade {
+            opacity: 1;
+            transition: opacity 300ms cubic-bezier(0.55, 0.085, 0.68, 0.53);
+        }
+    </style>
+
+
+
+</head>
+
+
+
+<body onresize="repositionSelector(true)">
+    <div>
+        <div id="nav-bar">
+            <ul>
+                <li><a href="#" onclick="onClick(0)">Cupertino</a></li>
+                <li><a href="#" onclick="onClick(1)">New York City</a></li>
+                <li><a href="#" onclick="onClick(2)">London</a></li>
+                <li><a href="#" onclick="onClick(3)">Amsterdam</a></li>
+                <li><a href="#" onclick="onClick(4)">Tokyo</a></li>
+                <li><a href="#" onclick="onClick(5)">Hong Kong</a></li>
+                <li><a href="#" onclick="onClick(6)">Sydney</a></li>
+            </ul>
+
+            <hr id="pseudo-active-selector" />
+
+
+        </div>
+
+        <script>
+
+            /* Adjusts pseudo-active-selector width and positioning */
+            const repositionSelector = (isResizing) => {
+                const links = document.getElementsByTagName('a');
+
+                let activeLinkIndex = -1;
+
+                for (let i = 0; i < links.length; i++) {
+                    if (links[i].className === 'active') {
+                        activeLinkIndex = i;
+                    }
+                }
+
+                if (activeLinkIndex === -1) {
+                    return;
+                }
+
+                /* -40 to account for margin */
+                let marginLeft = -40;
+
+                const currentLinkRects = links[activeLinkIndex].getBoundingClientRect();
+
+                marginLeft += currentLinkRects.x;
+
+                const pseudoActiveSelector = document.getElementById('pseudo-active-selector');
+
+                const currentLinkWidth = currentLinkRects.width;
+
+                /* Moves and adjusts the sizing of the pseudo-active-selector element */
+                pseudoActiveSelector.style = `margin-left:${marginLeft}px;width:${currentLinkWidth}px;${isResizing ? 'transition:none;' : 'transition: .3s ease-in-out;'}`;
+
+            }
+
+            // Modifies class attributes to reflect what link is active
+            const setActiveLink = (index) => {
+                const links = document.getElementsByTagName('a');
+
+                const activeLink = document.getElementsByClassName("active");
+
+                if (activeLink.length) {
+                    // Assumes only 1 item can be active
+                    activeLink[0].className = activeLink[0].className.replace("active", "");
+                }
+
+                links[index].className = 'active';
+            }
+
+            const convertTZ = (date, tzString) => {
+                return date.toLocaleString("en-US", { timeZone: tzString });
+            }
+
+            // Gets current time and converts to target timezone
+            const getDisplayedTime = (index) => {
+                const now = new Date();
+
+
+                switch (index) {
+                    /* Cuppertino */
+                    case 0: {
+                        return convertTZ(now, 'America/Los_Angeles');
+                    }
+
+                    /* New York */
+                    case 1: {
+                        return convertTZ(now, 'America/New_York');
+
+                    }
+
+                    /* London */
+                    case 2: {
+                        return convertTZ(now, 'Europe/London');
+
+                    }
+
+                    /* Amsterdam */
+                    case 3: {
+                        return convertTZ(now, 'Europe/Amsterdam');
+
+                    }
+
+                    /* Tokyo */
+                    case 4: {
+                        return convertTZ(now, 'Asia/Tokyo');
+
+                    }
+
+                    /* Hong Kong */
+                    case 5: {
+                        return convertTZ(now, 'Asia/Hong_Kong');
+
+                    }
+
+                    /* Sydney */
+                    case 6: {
+                        return convertTZ(now, 'Australia/Sydney');
+
+                    }
+
+                    default: {
+                        return '';
+                    }
+                }
+            }
+
+            // Injects local time into element with id="local-time"
+            // Also triggers fade in / fade out css animations
+            const triggerLocalTimeChange = (index) => {
+                const localTimeElement = document.getElementById('local-time')
+
+                localTimeElement.classList.remove("fade"); // removing the class
+                setTimeout(() => {
+                    requestAnimationFrame(() => {
+                        localTimeElement.innerHTML = getDisplayedTime(index);
+                        localTimeElement.classList.add("fade");
+                    });
+                }, 250); // timeout
+            }
+
+            const onClick = (index) => {
+                setActiveLink(index);
+                repositionSelector();
+                triggerLocalTimeChange(index);
+            }
+        </script>
+
+
+        <div style="display:flex;height:100%;justify-content:center; align-content:center;flex-wrap:wrap;">
+
+            <!-- No children; Will be modified by onClick -->
+            <text class="dateText fade" id="local-time" />
+        </div>
+
+    </div>
+</body>
+
+</html>
